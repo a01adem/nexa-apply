@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+                        <html lang="ar" dir="rtl">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <title>لوحة الإدارة - Nexa Studio</title>
+                            <meta property="og:site_name" content="Nexa Studio">
+                            <meta property="og:image" content="https://cdn.discordapp.com/icons/1248635335198380183/2c2eb3a36d693b371fa79a9d2781c62a.webp?size=2048">
+                            <meta property="og:description" content="لوحة الإدارة - Nexa Studio">
+                            <meta name="theme-color" content="#E6E6F4">
+                            <script src="https://cdn.tailwindcss.com"></script>
+                            <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
+                            <style>
+                                body {
+                                    font-family: "Cairo", sans-serif;
+                                }
+                                .space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+                                    --tw-space-x-reverse: 1;
+                                }
+                            </style>
+                        </head>
+                        <body class="bg-[#C7AC8F] min-h-screen p-4">
+                            <div class="container mx-auto bg-[#635647] shadow-lg rounded-lg p-8">
+                                <h1 class="text-3xl font-bold text-[#EAE0D6] mb-6 text-center">لوحة الإدارة</h1>
+
+                                <!-- قسم الحالة والجدول -->
+                                <div class="mb-6">
+                                    <div class="mb-6">
+                                        <h2 class="text-xl font-semibold text-[#EAE0D6] mb-2">حالة التقديم الأن:</h2>
+                                        <p class="text-lg font-bold <% if (status.isOpen) { %>text-green-500<% } else { %>text-red-500<% } %>">
+                                            <%= status.isOpen ? 'مفتوح' : 'مغلق' %>
+                                        </p>
+                                        <% if (!status.isOpen) { %>
+                                                    <% } %>
+                                        <div class="flex justify-center space-x-4">
+                                            <button id="closeButton" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors <% if (!status.isOpen) { %>opacity-50 cursor-not-allowed<% } %>" <% if (!status.isOpen) { %> disabled <% } %> onclick="updateStatus(false)">إغلاق</button>
+                                            <button id="openButton" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors <% if (status.isOpen) { %>opacity-50 cursor-not-allowed<% } %>" <% if (status.isOpen) { %> disabled <% } %> onclick="updateStatus(true)">فتح</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- جدول المتقدمين -->
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full text-[#EAE0D6]">
+                                            <thead>
+                                                <tr class="bg-[#4A3F33] text-[#EAE0D6]">
+                                                    <th class="p-2 text-right">الاسم</th>
+                                                    <th class="p-2 text-right">الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% applicants.forEach((applicant, index) => { %>
+                                                    <tr class="border-b border-[#4A3F33]">
+                                                        <td class="p-2"><%= applicant.name %></td>
+                                                        <td class="p-2">
+                                                            <div class="flex justify-end space-x-2 space-x-reverse">
+                                                                <button class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 transition-colors" onclick="handleAction('accept', <%= index %>)">قبول</button>
+                                                                <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition-colors" onclick="handleAction('reject', <%= index %>)">رفض</button>
+                                                                <button class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition-colors" onclick="openModal(<%= index %>)">رؤية</button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                <% }) %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal -->
+                            <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+                                <div class="bg-[#EAE0D6] p-8 rounded-lg max-w-md w-full mx-4 transform transition-all duration-300 scale-0">
+                                    <h2 class="text-2xl font-bold text-[#635647] mb-4">تفاصيل المتقدم</h2>
+                                    <div id="modalContent" class="text-[#635647]"></div>
+                                    <button onclick="closeModal()" class="mt-4 bg-[#635647] text-[#EAE0D6] px-4 py-2 rounded hover:bg-[#C7AC8F] transition-colors">إغلاق</button>
+                                </div>
+                            </div>
+
+                            <script>
+                                const applicants = <%- JSON.stringify(applicants) %>;
+                                const status = <%- JSON.stringify(status) %>; // جلب حالة التقديم
+
+                                function handleAction(action, id) {
+                                    fetch(`/${action}-applicant/${applicants[id]._id}`, {
+                                        method: 'POST',
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            openModalMessage(`تم ${action === 'accept' ? 'قبول' : 'رفض'} المتقدم بنجاح.`);
+                                        } else {
+                                            openModalMessage(data.message);
+                                        }
+                                    })
+                                    .catch(err => {
+                                        console.error(err);
+                                        openModalMessage('حدث خطأ أثناء المعالجة.');
+                                    });
+                                }
+
+                                function updateStatus(isOpen) {
+                                    fetch('/update-status', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({ isOpen }),
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            location.reload(); // إعادة تحميل الصفحة بعد تحديث الحالة
+                                        } else {
+                                            openModalMessage(data.message);
+                                        }
+                                    })
+                                    .catch(err => {
+                                        console.error(err);
+                                        openModalMessage('حدث خطأ أثناء معالجة الحالة.');
+                                    });
+                                }
+
+                                function openModalMessage(message) {
+                                    const modal = document.getElementById('modal');
+                                    const modalContent = document.getElementById('modalContent');
+
+                                    modalContent.innerHTML = `<p>${message}</p>`;
+
+                                    modal.classList.remove('hidden');
+                                    modal.classList.add('flex');
+                                    setTimeout(() => {
+                                        modal.querySelector('div').classList.remove('scale-0');
+                                        modal.querySelector('div').classList.add('scale-100');
+                                    }, 10);
+                                }
+
+                                function openModal(id) {
+                                    const modal = document.getElementById('modal');
+                                    const modalContent = document.getElementById('modalContent');
+                                    const applicant = applicants[id];
+
+                                    modalContent.innerHTML = `
+                                        <p><strong>ايدي الشخص:</strong> ${applicant.userId}</p>
+                                        <p><strong>الاسم:</strong> ${applicant.name}</p>
+                                        <p><strong>العمر:</strong> ${applicant.age}</p>
+                                        <p><strong>البلد:</strong> ${applicant.country}</p>
+                                        <p><strong>الخبرات:</strong> ${applicant.experience}</p>
+                                        <p><strong>تاريخ التقديم:</strong> ${new Date(applicant.createdAt).toLocaleString('ar-EG')}</p>
+                                    `;
+
+                                    modal.classList.remove('hidden');
+                                    modal.classList.add('flex');
+                                    setTimeout(() => {
+                                        modal.querySelector('div').classList.remove('scale-0');
+                                        modal.querySelector('div').classList.add('scale-100');
+                                    }, 10);
+                                }
+
+                                function closeModal() {
+                                    const modal = document.getElementById('modal');
+                                    modal.querySelector('div').classList.remove('scale-100');
+                                    modal.querySelector('div').classList.add('scale-0');
+                                    setTimeout(() => {
+                                        modal.classList.remove('flex');
+                                        modal.classList.add('hidden');
+                                    }, 300);
+                                }
+                            </script>
+                        </body>
+                                                </html>
