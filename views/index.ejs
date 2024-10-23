@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexa Studio</title>
+    <meta property="og:site_name" content="Nexa Studio">
+    
+    <meta property="og:description" content="الموقع الرسمي لنيكسا ستديو للتقديم على السيبورت">
+    <meta name="theme-color" content="#C7AC8F">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-[#C7AC8F] min-h-screen flex items-center justify-center">
+    <% if (!user) { %> <!-- إذا لم يكن المستخدم مسجلاً للدخول -->
+        <div class="bg-[#635647] shadow-lg rounded-lg p-8 max-w-md mx-auto">
+            <div class="text-center">
+                <h1 class="text-3xl font-bold text-[#EAE0D6] mb-4">Nexa Studio</h1>
+                <p class="text-lg text-[#E7DBCD] mb-8">يجب عليك تسجيل الدخول لكي تستطيع التقديم</p>
+                <a href="/login" class="group relative inline-flex items-center justify-center px-8 py-3 overflow-hidden font-bold rounded-full bg-[#EAE0D6] text-black shadow-2xl transition-all duration-300 ease-out hover:pl-14 hover:pr-6">
+                    <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
+                    <span class="absolute left-0 w-8 h-32 -mt-12 transition-all duration-1000 transform -translate-x-12 bg-white opacity-10 rotate-12 group-hover:translate-x-40 ease"></span>
+                    <span class="relative w-full text-left transition-colors duration-200 ease-in-out group-hover:text-black">Login with Discord</span>
+                    <span class="absolute inset-0 flex items-center justify-center w-10 h-10 duration-300 transform opacity-0 translate-x-full ease group-hover:opacity-100 group-hover:translate-x-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </span>
+                </a>
+            </div>
+        </div>
+    <% } else { %> <!-- إذا كان المستخدم مسجلاً للدخول -->
+        <div class="bg-[#635647] shadow-lg rounded-lg p-8 max-w-md w-full mx-auto text-center">
+    <h1 class="text-3xl font-bold text-[#EAE0D6] mb-6">Nexa Studio</h1>
+    <div class="mb-6">
+        <img src="<%= user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` : `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator) % 5}.png` %>" alt="User Profile" class="w-32 h-32 rounded-full mx-auto border-4 border-[#EAE0D6]">
+    </div>
+    <h2 class="text-2xl font-semibold text-[#EAE0D6] mb-4"><%= user.username %></h2>
+    <div class="flex justify-center items-center gap-4">
+        <a href="/apply" class="group relative inline-flex items-center justify-center px-8 py-3 overflow-hidden font-bold rounded-full bg-[#EAE0D6] text-black shadow-2xl transition-all duration-300 ease-out hover:pl-14 hover:pr-6">
+            <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
+            <span class="absolute left-0 w-8 h-32 -mt-12 transition-all duration-1000 transform -translate-x-12 bg-white opacity-10 rotate-12 group-hover:translate-x-40 ease"></span>
+            <span class="relative w-full text-left transition-colors duration-200 ease-in-out group-hover:text-black">Apply</span>
+            <span class="absolute inset-0 flex items-center justify-center w-10 h-10 duration-300 transform opacity-0 translate-x-full ease group-hover:opacity-100 group-hover:translate-x-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </span>
+        </a>
+
+        <!-- زر تسجيل الخروج -->
+        <a href="/logout" class="group relative inline-flex items-center justify-center px-8 py-3 overflow-hidden font-bold rounded-full bg-red-600 text-white shadow-2xl transition-all duration-300 ease-out hover:pl-14 hover:pr-6">
+            <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
+            <span class="absolute left-0 w-8 h-32 -mt-12 transition-all duration-1000 transform -translate-x-12 bg-white opacity-10 rotate-12 group-hover:translate-x-40 ease"></span>
+            <span class="relative w-full text-left transition-colors duration-200 ease-in-out group-hover:text-white">Logout</span>
+            <span class="absolute inset-0 flex items-center justify-center w-10 h-10 duration-300 transform opacity-0 translate-x-full ease group-hover:opacity-100 group-hover:translate-x-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </span>
+        </a>
+    </div>
+
+    <!-- قسم المشرفين -->
+    <% if (config.admins.includes(user.id)) { %> <!-- عرض فقط للمشرفين -->
+    <div class="mt-8 p-4 border-t-2 border-[#EAE0D6]">
+        <h3 class="text-2xl font-semibold text-[#EAE0D6] mb-4">Admins</h3>
+        <a href="/admin" class="group relative inline-flex items-center justify-center px-8 py-3 overflow-hidden font-bold rounded-full bg-[#EAE0D6] text-black shadow-2xl transition-all duration-300 ease-out hover:pl-14 hover:pr-6">
+            <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
+            <span class="absolute left-0 w-8 h-32 -mt-12 transition-all duration-1000 transform -translate-x-12 bg-white opacity-10 rotate-12 group-hover:translate-x-40 ease"></span>
+            <span class="relative w-full text-left transition-colors duration-200 ease-in-out group-hover:text-black">Admin Dashboard</span>
+            <span class="absolute inset-0 flex items-center justify-center w-10 h-10 duration-300 transform opacity-0 translate-x-full ease group-hover:opacity-100 group-hover:translate-x-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </span>
+        </a>
+    </div>
+    <% } %> <!-- نهاية قسم المشرفين -->
+
+</div>
+
+    <% } %>
+    
+    <script>
+        // Add Bot form submission
+        document.getElementById('addBotForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            var submitButton = form.querySelector('button[type="submit"]');
+            var spinner = submitButton.querySelector('.spinner');
+            var buttonText = submitButton.lastChild;
+
+            // Show spinner and hide button text
+            spinner.classList.remove('hidden');
+            buttonText.textContent = '';
+
+            // Simulate form submission (replace with actual form submission)
+            setTimeout(function() {
+                // Hide spinner and show button text
+                spinner.classList.add('hidden');
+                buttonText.textContent = 'Add Bot';
+                
+                // Actually submit the form
+                form.submit();
+            }, 1000);
+        });
+    </script>
+
+    <style>
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</body>
+    </html>
+        
