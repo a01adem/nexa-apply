@@ -1,5 +1,5 @@
 module.exports = {
-  token: 'MTI5ODYyMTU1NTQ3OTQxNjkwMg.G-tnFv.5Bz-ZG3fEfDJhoBzMiWGRT4Pd85o-76LX5H1bk' || process.env.token,
+  token: '' || process.env.token,
   admins: ['785427631876472892', "915689279605342218"],
   clientId: '1298595629177638932',
   clientSecret: 'f9tnxySbwJfeKU8ELjBmU3tt75sY02WB',
